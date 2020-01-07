@@ -89,7 +89,6 @@ describe('flow-node logger', () => {
 			expect(result.output).to.equal('error');
 
 			expect(result.args[0]).to.equal(null);
-			expect(result.args[1]).to.be.an('Error');
 			expect(result.args[1]).to.be.instanceOf(Error)
 				.and.to.have.property('message', 'invalid log level: foobar');
 			expect(result.context).to.be.an('Object');

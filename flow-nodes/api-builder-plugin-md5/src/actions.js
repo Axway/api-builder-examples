@@ -5,11 +5,15 @@ function digest(req, outputs) {
 	if (data === undefined || data === null) {
 		return outputs.error(null, new Error('invalid argument: data'));
 	}
-	const hash = crypto
-		.createHash('md5')
-		.update(data)
-		.digest('hex');
-	outputs.next(null, hash);
+	try {
+		const hash = crypto
+			.createHash('md5')
+			.update(data)
+			.digest('hex');
+		outputs.next(null, hash);
+	} catch (ex) {
+		outputs.error(null, ex);
+	}
 }
 
 module.exports = {
