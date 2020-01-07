@@ -1,15 +1,15 @@
 const path = require('path');
-const sdk = require('@axway/api-builder-sdk');
+const { SDK } = require('@axway/api-builder-sdk');
 const actions = require('./actions');
 
 /**
  * Resolves the API Builder plugin.
  * @returns {object} An API Builder plugin.
  */
-function getPlugin() {
-	return sdk
-		.init(module)
-		.load(path.join('src', 'flow-nodes.yml'), actions);
+async function getPlugin() {
+	const sdk = new SDK();
+	sdk.load(path.resolve(__dirname, 'flow-nodes.yml'), actions);
+	return sdk.getPlugin();
 }
 
 module.exports = getPlugin;
