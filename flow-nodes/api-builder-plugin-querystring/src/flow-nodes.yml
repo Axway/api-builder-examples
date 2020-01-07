@@ -1,0 +1,127 @@
+flow-nodes:
+  querystring:
+    name: Querystring
+    icon: icon.svg
+    description: The querystring flow-node provides utilities for parsing and formatting URL query strings.
+    category: general
+    methods:
+      encode:
+        name: Encode URL Query String
+        description: Parses a URL query string into a collection of key and value pairs.
+        parameters:
+          obj:
+            description: The object to serialize into a URL query string.
+            required: true
+            initialType: object
+            schema:
+              type: object
+          sep:
+            description: The substring used to delimit key and value pairs in the query string.
+            required: false
+            default: '&'
+            initialType: string
+            schema:
+              type: string
+          eq:
+            description: The substring used to delimit keys and values in the query string.
+            required: false
+            default: '='
+            initialType: string
+            schema:
+              type: string              
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.encodedString
+            schema:
+              type: string
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
+      decode:
+        name: Decode URL Query String
+        description: Produces a URL query string from a given obj by iterating through the object's "own properties".
+        parameters:
+          str:
+            description: The URL query string to encode.
+            required: true
+            initialType: string
+            schema:
+              type: string
+          sep:
+            description: The substring used to delimit key and value pairs in the query string.
+            required: false
+            default: '&'
+            initialType: string
+            schema:
+              type: string
+          eq:
+            description: The substring used to delimit keys and values in the query string.
+            required: false
+            default: '='
+            initialType: string
+            schema:
+              type: string              
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.decodedObject
+            schema:
+              type: object
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
+      escape:
+        name: URL Percent-Encode String
+        description: Performs URL percent-encoding on the given string.
+        parameters:
+          str:
+            description: The string to be encoded.
+            required: true
+            initialType: string
+            schema:
+              type: string
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.encodedStr
+            schema:
+              type: string
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
+      unescape:
+        name: Decode URL Percent-Encoded String
+        description: Performs decoding of URL percent-encoded characters on the given string.
+        parameters:
+          str:
+            description: The string to decode.
+            required: true
+            initialType: string
+            schema:
+              type: string
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.decodedStr
+            schema:
+              type: string
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
