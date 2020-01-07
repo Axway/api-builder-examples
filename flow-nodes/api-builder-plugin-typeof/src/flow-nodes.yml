@@ -1,0 +1,32 @@
+flow-nodes:
+  getType:
+    name: Get Type
+    icon: icon.svg
+    description: Gets the type of data
+    category: general
+    methods:
+      getType:
+        name: Get Type
+        description: Gets the type of data
+        parameters:
+          data:
+            description: The data that you want to find the type of.
+            required: true
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.type
+            schema:
+              type: string
+              enum:
+                - array
+                - bigint
+                - boolean
+                - function
+                - "null"
+                - number
+                - object
+                - string
+                - symbol
+                - undefined

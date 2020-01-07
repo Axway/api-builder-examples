@@ -1,6 +1,6 @@
-# api-builder-plugin-md5
+# api-builder-plugin-typeof
 
-An API Builder plugin for creating an MD5 hash.
+API Builder plugin for getting the type of some data.
 
 ## About flow-nodes
 
