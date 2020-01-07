@@ -38,11 +38,11 @@ describe('flow-node md5', () => {
 			expect(result.callCount).to.equal(1);
 			expect(result.output).to.equal('error');
 			expect(result.args[0]).to.equal(null);
-			expect(result.args[1]).to.be.an('Error');
-			expect(result.args[1].message).to.equal('invalid argument: data')
+			expect(result.args[1]).to.be.instanceOf(Error)
+				.and.to.have.property('message', 'invalid argument: data')
 			expect(result.context).to.be.an('Object');
-			expect(result.context.error).to.be.an('Error');
-			expect(result.context.error.message).to.equal('invalid argument: data');
+			expect(result.context.error).to.be.instanceOf(Error)
+				.and.to.have.property('message', 'invalid argument: data');
 		});
 
 		it('should hash a string', async () => {
