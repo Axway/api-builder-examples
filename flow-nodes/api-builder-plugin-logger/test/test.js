@@ -87,11 +87,13 @@ describe('flow-node logger', () => {
 
 			expect(result.callCount).to.equal(1);
 			expect(result.output).to.equal('error');
-			expect(result.args)
-				.to.deep.equal([ null, 'Invalid log level: foobar' ]);
-			expect(result.context).to.deep.equal({
-				error: 'Invalid log level: foobar'
-			});
+
+			expect(result.args[0]).to.equal(null);
+			expect(result.args[1]).to.be.an('Error');
+			expect(result.args[1].message).to.equal('invalid log level: foobar')
+			expect(result.context).to.be.an('Object');
+			expect(result.context.error).to.be.an('Error');
+			expect(result.context.error.message).to.equal('invalid log level: foobar');
 		});
 
 		it('should log with default log level', async () => {

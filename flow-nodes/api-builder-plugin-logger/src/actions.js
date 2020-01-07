@@ -16,7 +16,7 @@ function log(req, outputs) {
 	}
 
 	if (![ 'trace', 'debug', 'warn', 'error' ].includes(level)) {
-		return outputs.error(null, `Invalid log level: ${level}`);
+		return outputs.error(null, new Error(`invalid log level: ${level}`));
 	}
 	logger[level](req.params.message);
 	return outputs.next();

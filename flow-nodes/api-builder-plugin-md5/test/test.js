@@ -31,17 +31,18 @@ describe('flow-node md5', () => {
 			// instruct the flow-engine to abort flow.
 			const flowNode = runtime.getFlowNode('md5');
 
-			const result = await flowNode.digestasdf({
+			const result = await flowNode.digest({
 				data: undefined
 			});
 
 			expect(result.callCount).to.equal(1);
 			expect(result.output).to.equal('error');
-			expect(result.args)
-				.to.deep.equal([ null, 'invalid argument: data' ]);
-			expect(result.context).to.deep.equal({
-				error: 'invalid argument: data'
-			});
+			expect(result.args[0]).to.equal(null);
+			expect(result.args[1]).to.be.an('Error');
+			expect(result.args[1].message).to.equal('invalid argument: data')
+			expect(result.context).to.be.an('Object');
+			expect(result.context.error).to.be.an('Error');
+			expect(result.context.error.message).to.equal('invalid argument: data');
 		});
 
 		it('should hash a string', async () => {
