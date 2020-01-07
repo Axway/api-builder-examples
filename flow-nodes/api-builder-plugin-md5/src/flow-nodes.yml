@@ -1,0 +1,27 @@
+flow-nodes:
+  md5:
+    name: MD5
+    icon: icon.svg
+    description: MD5 message digest
+    category: general
+    methods:
+      digest:
+        description: Creates an MD5 digest and returns as hex.
+        parameters:
+          data:
+            description: The data to digest.
+            required: true
+            initialType: string
+        outputs:
+          next:
+            name: Next
+            description: Successfully created digest.
+            context: $.md5
+            schema:
+              type: string
+          error:
+            name: Error
+            description: Encountered an error.
+            context: $.error
+            schema:
+              type: string

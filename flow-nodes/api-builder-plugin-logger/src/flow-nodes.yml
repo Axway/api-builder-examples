@@ -1,0 +1,42 @@
+flow-nodes:
+  logger:
+    name: Logger
+    icon: icon.svg
+    description: Logger utility.
+    category: general
+    methods:
+      log:
+        description: Writes to the output log.
+        parameters:
+          level:
+            description: The log level to write to.
+            required: false
+            initialType: string
+            schema:
+              type: string
+              enum:
+                - trace
+                - debug
+                - warn
+                - error
+                - time
+                - timeEnd
+              default: trace
+          message:
+            description: The log message.
+            required: true
+            initialType: string
+            schema:
+              type: string
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            schema:
+              type: string
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
