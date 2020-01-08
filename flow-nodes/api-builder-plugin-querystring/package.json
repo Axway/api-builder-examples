@@ -17,7 +17,7 @@
 		"README.md"
 	],
 	"dependencies": {
-		"@axway/api-builder-sdk": "rdpp-4899"
+		"@axway/api-builder-sdk": "next"
 	},
 	"peerDependencies": {
 		"@axway/api-builder-runtime": "^4.5.0"
