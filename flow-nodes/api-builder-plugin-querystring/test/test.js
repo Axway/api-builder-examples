@@ -14,8 +14,6 @@ describe('flow-node querystring', () => {
 			expect(runtime).to.exist;
 			const flownode = runtime.getFlowNode('querystring');
 			expect(flownode).to.be.a('object');
-
-			// Ensure the flow-node matches the spec
 			expect(flownode.name).to.equal('Querystring');
 			expect(flownode.description).to.equal('The querystring flow-node provides utilities for parsing and formatting URL query strings.');
 			expect(flownode.icon).to.be.a('string');
@@ -32,7 +30,6 @@ describe('flow-node querystring', () => {
 
 	describe('#encode', () => {
 		it('should error when missing parameter', async () => {
-			// Invoke #hello with a non-number and check error.
 			const flowNode = runtime.getFlowNode('querystring');
 			const result = await flowNode.encode({obj: null});
 			expect(result.callCount).to.equal(1);
@@ -56,7 +53,6 @@ describe('flow-node querystring', () => {
 
 	describe('#decode', () => {
 		it('should error when missing parameter', async () => {
-			// Invoke #hello with a non-number and check error.
 			const flowNode = runtime.getFlowNode('querystring');
 			const result = await flowNode.decode({str: null});
 			expect(result.callCount).to.equal(1);

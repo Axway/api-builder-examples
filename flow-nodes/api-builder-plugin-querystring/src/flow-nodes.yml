@@ -17,18 +17,18 @@ flow-nodes:
               type: object
           sep:
             description: The substring used to delimit key and value pairs in the query string.
-            required: false
-            default: '&'
+            required: false            
             initialType: string
             schema:
               type: string
+              default: '&'
           eq:
             description: The substring used to delimit keys and values in the query string.
-            required: false
-            default: '='
+            required: false                        
             initialType: string
             schema:
-              type: string              
+              type: string
+              default: '='             
         outputs:
           # success output(s) should be first
           next:
@@ -54,18 +54,18 @@ flow-nodes:
               type: string
           sep:
             description: The substring used to delimit key and value pairs in the query string.
-            required: false
-            default: '&'
+            required: false            
             initialType: string
             schema:
               type: string
+              default: '&'
           eq:
             description: The substring used to delimit keys and values in the query string.
-            required: false
-            default: '='
+            required: false            
             initialType: string
             schema:
-              type: string              
+              type: string
+              default: '='             
         outputs:
           # success output(s) should be first
           next:
