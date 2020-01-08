@@ -1,0 +1,36 @@
+flow-nodes:
+  format-date:
+    name: Format Date
+    icon: calendar.svg
+    description: Example flow-node that formats Date. Uses the popular Moment.js library.
+    category: general
+    methods:
+      formatDate:
+        name: Format Date
+        description: Formats a date. See Moment.js format() method.
+        parameters:
+          date:
+            description: The date to be formatted.
+            required: true
+            initialType: string
+            schema:
+              type: string
+          format:
+            description: The desired format. Supports all Moment.js supported formats.
+            required: true
+            initialType: string
+            schema:
+              type: string
+        outputs:
+          # success output(s) should be first
+          next:
+            name: Next
+            context: $.date
+            schema:
+              type: string
+          # error output(s) should be last
+          error:
+            name: Error
+            context: $.error
+            schema:
+              type: string
