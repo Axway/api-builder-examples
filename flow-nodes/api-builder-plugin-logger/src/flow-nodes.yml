@@ -19,8 +19,6 @@ flow-nodes:
                 - debug
                 - warn
                 - error
-                - time
-                - timeEnd
               default: trace
           message:
             description: The log message.

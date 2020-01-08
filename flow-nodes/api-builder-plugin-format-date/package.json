@@ -1,7 +1,7 @@
 {
 	"name": "api-builder-plugin-format-date",
 	"version": "1.0.0",
-	"description": "A plugin for Axway API Builder",
+	"description": "A flow-node to format date strings",
 	"author": "",
 	"license": "ISC",
 	"keywords": [
@@ -16,6 +16,10 @@
 		"src",
 		"README.md"
 	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/axway/api-builder-examples"
+	},
 	"dependencies": {
 		"@axway/api-builder-sdk": "^0.1.0",
 		"moment": "^2.24.0"
