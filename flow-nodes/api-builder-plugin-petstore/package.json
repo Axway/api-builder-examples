@@ -1,7 +1,7 @@
 {
-	"name": "api-builder-plugin-typeof",
+	"name": "api-builder-plugin-petstore",
 	"version": "1.0.0",
-	"description": "A flow-node to get the type of provided data",
+	"description": "A flow-node to connect to the petstore API",
 	"author": "",
 	"license": "ISC",
 	"keywords": [
@@ -11,9 +11,10 @@
 	"engines": {
 		"node": ">= 12.13"
 	},
-	"main": "src/index.js",
+	"main": "index.js",
 	"files": [
-		"src",
+		"index.js",
+		"openapi",
 		"README.md"
 	],
 	"repository": {
@@ -21,12 +22,13 @@
 		"url": "https://github.com/axway/api-builder-examples"
 	},
 	"dependencies": {
-		"@axway/api-builder-sdk": "^0.2.0"
+		"@axway/api-builder-oas-flow-node": "^1.0.0"
 	},
 	"peerDependencies": {
 		"@axway/api-builder-runtime": "^4.5.0"
 	},
 	"devDependencies": {
+		"@axway/api-builder-sdk": "^0.2.0",
 		"chai": "^4.1.2",
 		"mocha": "^6.1.4"
 	},

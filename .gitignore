@@ -1,7 +1,4 @@
-node_modules/
-coverage/
 .DS_Store
 *.log
 .vscode
-.nyc_output
 .idea
