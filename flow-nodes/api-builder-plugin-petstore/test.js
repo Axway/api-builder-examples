@@ -16,7 +16,7 @@ function getLogger () {
 	return logger;
 }
 
-describe('flow-node format-date', () => {
+describe('flow-node petstore', () => {
 	let runtime;
 	before(async () => {
 		const plugin = await getPlugin({}, {

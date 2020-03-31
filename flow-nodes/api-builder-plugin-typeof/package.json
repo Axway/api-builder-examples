@@ -9,12 +9,11 @@
 		"api-builder"
 	],
 	"engines": {
-		"node": ">= 12.13"
+		"node": ">= 12.15"
 	},
 	"main": "src/index.js",
 	"files": [
-		"src",
-		"README.md"
+		"src"
 	],
 	"repository": {
 		"type": "git",
