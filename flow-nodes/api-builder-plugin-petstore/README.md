@@ -1,7 +1,7 @@
 # api-builder-plugin-petstore
 An API Builder flow-node plugin that exports Petstore API functions.
 
-Internally, the plugin uses the same engine as `@axway/api-builder-plugin-fn-swagger` to package and version OAS 2/3 specs from the plugin's `openapi` directory in a managed way.
+The plugin packages OAS 2/3 specs from the `openapi` directory and generates flow-nodes from them.
 
 ## About flow-nodes
 
