@@ -9,19 +9,18 @@
 		"api-builder"
 	],
 	"engines": {
-		"node": ">= 10.0"
+		"node": ">= 12.15"
 	},
 	"main": "src/index.js",
 	"files": [
-		"src",
-		"README.md"
+		"src"
 	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/axway/api-builder-examples"
 	},
 	"dependencies": {
-		"@axway/api-builder-sdk": "^0.1.0"
+		"@axway/api-builder-sdk": "^0.2.0"
 	},
 	"peerDependencies": {
 		"@axway/api-builder-runtime": "^4.5.0"
