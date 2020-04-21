@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const { MockRuntime } = require('@axway/api-builder-sdk');
 
-const getPlugin = require('./index');
+const getPlugin = require('../index');
 
 function getLogger () {
 	const logger = {
