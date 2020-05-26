@@ -134,13 +134,13 @@ describe('flow-node format-date', () => {
 		/**
 		 * Check some of the available formatting that Moment.js provides.
 		 */
-		it.skip('should format date as expected with different formats', async () => {
+		it('should format date as expected with different formats', async () => {
 
 			const testDate = '2020-01-08T13:24:40+02:00';
 			const testData = [
 				{
 					format: 'MMMM Do YYYY, h:mm:ss a',
-					formatted: 'January 8th 2020, 1:24:40 pm'
+					formatted: 'January 8th 2020, 11:24:40 am'
 				},
 				{
 					format: 'YYYY-MM-DD',
