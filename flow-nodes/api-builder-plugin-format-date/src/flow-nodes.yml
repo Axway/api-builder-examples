@@ -5,32 +5,35 @@ flow-nodes:
     description: Example flow-node that formats Date. Uses the popular Moment.js library.
     category: general
     methods:
-      formatDate:
+      formatDate: # This same key is used in `actions.js`
         name: Format Date
         description: Formats a date. See Moment.js format() method.
         parameters:
           date:
+            name: Date
             description: The date to be formatted.
             required: true
             initialType: string
             schema:
               type: string
           format:
+            name: Format
             description: The desired format. Supports all Moment.js supported formats.
             required: true
             initialType: string
             schema:
               type: string
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.date
-            schema:
-              type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.date
+          schema:
+            type: string
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
