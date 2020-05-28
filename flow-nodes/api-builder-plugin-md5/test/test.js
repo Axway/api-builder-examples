@@ -1,18 +1,25 @@
 const getPlugin = require('../src');
 const actions = require('../src/actions');
 const { expect } = require('chai');
-const { MockRuntime } = require('@axway/api-builder-sdk');
+const { MockRuntime } = require('@axway/api-builder-test-utils');
 
 describe('flow-node md5', () => {
-	let runtime;
-	before(async () => runtime = new MockRuntime(await getPlugin()));
+	let plugin;
+	let flowNode;
+	before(async () => {
+		plugin = await MockRuntime.loadPlugin(getPlugin);
+		flowNode = plugin.getFlowNode('md5');
+	});
 
 	describe('#constructor', () => {
 		it('should define flow-nodes', () => {
 			expect(actions).to.be.an('object');
 			expect(actions.digest).to.be.a('function');
-			expect(runtime).to.exist;
-			expect(runtime.getFlowNode('md5')).to.exist;
+			expect(plugin).to.be.a('object');
+			expect(plugin.getFlowNodeIds()).to.deep.equal([
+				'md5'
+			]);
+			expect(flowNode).to.be.a('object');
 		});
 
 		// It is vital to ensure that the generated node flow-nodes are valid
@@ -20,47 +27,31 @@ describe('flow-node md5', () => {
 		// validation to avoid potential issues when API Builder loads your
 		// node.
 		it('should define valid flow-nodes', () => {
-			expect(runtime.validate()).to.not.throw;
+			// if this is invalid, it will throw and fail
+			plugin.validate();
 		});
 	});
 
 	describe('#digest', () => {
 		it('should fail with invalid argument', async () => {
-			// Invoke #sum and check that the default callback is called,
-			// i.e. we expect `cb('invalid argument')` to be called and
-			// instruct the flow-engine to abort flow.
-			const flowNode = runtime.getFlowNode('md5');
 
-			const result = await flowNode.digest({
+			const { value, output } = await flowNode.digest({
 				data: undefined
 			});
 
-			expect(result.callCount).to.equal(1);
-			expect(result.output).to.equal('error');
-			expect(result.args[0]).to.equal(null);
-			expect(result.args[1]).to.be.instanceOf(Error)
-				.and.to.have.property('message', 'invalid argument: data');
-			expect(result.context).to.be.an('Object');
-			expect(result.context.error).to.be.instanceOf(Error)
+			expect(output).to.equal('error');
+			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', 'invalid argument: data');
 		});
 
 		it('should hash a string', async () => {
-			// Invoke #sum and check that the default callback is called,
-			// i.e. we expect `cb('invalid argument')` to be called and
-			// instruct the flow-engine to abort flow.
-			const flowNode = runtime.getFlowNode('md5');
 
-			const result = await flowNode.digest({
+			const { value, output } = await flowNode.digest({
 				data: 'foo'
 			});
 
-			expect(result.callCount).to.equal(1);
-			expect(result.output).to.equal('next');
-			expect(result.args).to.deep.equal([ null, 'acbd18db4cc2f85cedef654fccc4a4d8' ]);
-			expect(result.context).to.deep.equal({
-				md5: 'acbd18db4cc2f85cedef654fccc4a4d8'
-			});
+			expect(output).to.equal('next');
+			expect(value).to.equal('acbd18db4cc2f85cedef654fccc4a4d8');
 		});
 	});
 });
