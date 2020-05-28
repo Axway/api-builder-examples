@@ -6,9 +6,11 @@ flow-nodes:
     category: general
     methods:
       log:
+        name: Output Log
         description: Writes to the output log.
         parameters:
           level:
+            name: Loglevel
             description: The log level to write to.
             required: false
             initialType: string
@@ -21,20 +23,23 @@ flow-nodes:
                 - error
               default: trace
           message:
+            name: Logmessage
             description: The log message.
             required: true
             initialType: string
             schema:
               type: string
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            schema:
-              type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.log
+          schema:
+            type: string
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
