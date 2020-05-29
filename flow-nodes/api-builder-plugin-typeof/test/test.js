@@ -1,26 +1,28 @@
 const { expect } = require('chai');
-const { MockRuntime } = require('@axway/api-builder-sdk');
-
+const { MockRuntime } = require('@axway/api-builder-test-utils');
 const getPlugin = require('../src');
 const actions = require('../src/actions');
 
 describe('flow-node typeof', () => {
-	let runtime;
-	before(async () => runtime = new MockRuntime(await getPlugin()));
+	let plugin;
+	let flowNode;
+	before(async () => {
+		plugin = await MockRuntime.loadPlugin(getPlugin);
+		flowNode = plugin.getFlowNode('getType');
+	});
 
 	describe('#constructor', () => {
 		it('should define flow-nodes', () => {
 			expect(actions).to.be.an('object');
 			expect(actions.getType).to.be.a('function');
-			expect(runtime).to.exist;
-			const flownode = runtime.getFlowNode('getType');
-			expect(flownode).to.be.a('object');
+			expect(plugin).to.be.a('object');
+			expect(flowNode).to.be.a('object');
 
 			// Ensure the flow-node matches the spec
-			expect(flownode.name).to.equal('Get Type');
-			expect(flownode.description).to.equal('Gets the type of data');
-			expect(flownode.icon).to.be.a('string');
-			expect(flownode.methods).to.deep.equal({
+			expect(flowNode.name).to.equal('Get Type');
+			expect(flowNode.description).to.equal('Gets the type of data');
+			expect(flowNode.icon).to.be.a('string');
+			expect(flowNode.methods).to.deep.equal({
 				getType: {
 					name: 'Get Type',
 					description: 'Gets the type of data',
@@ -28,12 +30,16 @@ describe('flow-node typeof', () => {
 						data: {
 							description: 'The data that you want to find the type of.',
 							required: true,
-							schema: {}
+							schema: {
+								type: 'string',
+								title: 'Data'
+							}
 						}
 					},
 					outputs: {
 						next: {
 							name: 'Next',
+							description: 'The operation was successful.',
 							context: '$.type',
 							schema: {
 								type: 'string',
@@ -50,6 +56,14 @@ describe('flow-node typeof', () => {
 									'undefined'
 								]
 							}
+						},
+						error: {
+							name: 'Error',
+							description: 'An unexpected error was encountered.',
+							context: '$.error',
+							schema: {
+								type: 'string'
+							}
 						}
 					}
 				}
@@ -61,7 +75,8 @@ describe('flow-node typeof', () => {
 		// validation to avoid potential issues when API Builder loads your
 		// node.
 		it('should define valid flow-nodes', () => {
-			expect(runtime.validate()).to.not.throw;
+			// if this is invalid, it will throw and fail
+			plugin.validate();
 		});
 	});
 
@@ -110,20 +125,14 @@ describe('flow-node typeof', () => {
 				}
 			];
 
-			const flowNode = runtime.getFlowNode('getType');
-
 			for (const test of data) {
-				const result = await flowNode.getType({
+				const { value, output } = await flowNode.getType({
 					data: test.value
 				});
 	
-				expect(result.callCount).to.equal(1);
-				expect(result.output).to.equal('next');
-				expect(result.args)
-					.to.deep.equal([ null, test.type ]);
-				expect(result.context).to.deep.equal({
-					type: test.type
-				});
+				expect(output).to.equal('next');
+				expect(value)
+					.to.equal(test.type);
 			}
 			
 		});
