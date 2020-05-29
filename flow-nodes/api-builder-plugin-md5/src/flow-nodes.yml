@@ -15,7 +15,6 @@ flow-nodes:
             required: true
             initialType: string
             schema:
-              title: Data
               type: string
         # "Next" (next) output
         returns:
