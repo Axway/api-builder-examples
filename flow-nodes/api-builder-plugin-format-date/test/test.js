@@ -140,7 +140,7 @@ describe('flow-node format-date', () => {
 			const testData = [
 				{
 					format: 'MMMM Do YYYY, h:mm:ss a',
-					formatted: 'January 8th 2020, 11:24:40 am'
+					formatted: 'January 8th 2020, 1:24:40 am'
 				},
 				{
 					format: 'YYYY-MM-DD',
@@ -179,7 +179,7 @@ describe('flow-node format-date', () => {
 
 			expect(output).to.equal('next');
 			// Moments does some transformation based on its defined aliases. The result here is
-			const momentResult = 'c1/8/20203amr1/8/20202020-not-am-for0amt';
+			const momentResult = 'c1/8/20203pmr1/8/20202020-not-am-for0amt';
 			expect(value).to.equal(momentResult);
 		});
 
