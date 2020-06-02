@@ -38,7 +38,7 @@ describe('flow-node md5', () => {
 			const { value, output } = await flowNode.digest({
 				data: undefined
 			});
-
+			console.log(output);
 			expect(output).to.equal('error');
 			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', 'invalid argument: data');

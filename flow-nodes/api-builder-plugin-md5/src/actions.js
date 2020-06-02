@@ -25,15 +25,11 @@ function digest(params, { logger }) {
 		logger.error('invalid argument: data');
 		throw new Error('invalid argument: data');
 	}
-	try {
 		const hash = crypto
 			.createHash('md5')
 			.update(data)
 			.digest('hex');
-			return hash;
-	} catch (ex) {
-		throw new Error(ex);
-	}
+		return hash;
 }
 
 module.exports = {
