@@ -23,7 +23,8 @@ describe('flow-node format-date', () => {
 
 			// Ensure the flow-node matches the spec
 			expect(flowNode.name).to.equal('Format Date');
-			expect(flowNode.description).to.equal('Example flow-node that formats Date. Uses the popular Moment.js library.');
+			expect(flowNode.description)
+				.to.equal('Example flow-node that formats Date. Uses the popular Moment.js library.');
 			expect(flowNode.icon).to.be.a('string');
 			expect(flowNode.getMethods()).to.deep.equal([
 				'formatDate'
