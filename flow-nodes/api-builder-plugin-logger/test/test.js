@@ -43,7 +43,7 @@ describe('flow-node logger', () => {
 							required: false,
 							initialType: 'string',
 							schema: {
-								title: 'Loglevel',
+								title: 'Log level',
 								type: 'string',
 								default: 'trace',
 								enum: [ 'trace', 'debug', 'warn', 'error' ]
@@ -54,7 +54,7 @@ describe('flow-node logger', () => {
 							required: true,
 							initialType: 'string',
 							schema: {
-								title: 'Logmessage',
+								title: 'Log message',
 								type: 'string'
 							}
 						}
@@ -108,7 +108,7 @@ describe('flow-node logger', () => {
 			const { value, output } = await flowNode.log({
 				message: 'Hello'
 			});
-			expect(console.trace.callCount).to.equal(1);
+			expect(logger.trace.callCount).to.equal(1);
 			expect(output).to.equal('next');
 			expect(value).to.be.undefined;
 		});
