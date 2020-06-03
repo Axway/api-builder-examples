@@ -26,14 +26,14 @@ flow-nodes:
         # "Next" (next) output
         returns:
           name: Next
-          description: The operation was successful.
+          description: The desired formatted date displayed successfully.
           context: $.date
           schema:
             type: string
         # "Error" (error) output
         throws:
           name: Error
-          description: An unexpected error was encountered.
+          description: There is an unexpected error on format date encountered.
           context: $.error
           schema:
             type: string

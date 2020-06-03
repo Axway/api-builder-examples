@@ -20,15 +20,13 @@ const moment = require('moment');
  * @return {*} The response value (resolves to "next" output, or if the method
  *	 does not define "next", the first defined output).
  */
-function formatDate(params, { logger }) {
+function formatDate(params) {
 	const { date, format } = params;
 
 	if (!date) {
-		logger.error('The date parameter is missing.');
 		throw new Error('Missing required parameter: date');
 	}
 	if (!format) {
-		logger.error('The format parameter is missing.');
 		throw new Error('Missing required parameter: format');
 	}
 
@@ -38,7 +36,6 @@ function formatDate(params, { logger }) {
 
 	// Moment doesn't throw an error if the passed in date is invalid it just returns 'Invalid date'
 	if (formattedDate === 'Invalid date') {
-		logger.error('Invalid date');
 		throw new Error(`Invalid date: '${date}`);
 	}
 	return formattedDate;
