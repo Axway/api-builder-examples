@@ -27,9 +27,9 @@
 		"@axway/api-builder-runtime": "^4.5.0"
 	},
 	"devDependencies": {
+		"@axway/api-builder-test-utils": "^0.1.0",
 		"chai": "^4.1.2",
-		"mocha": "^7.1.1",
-		"@axway/api-builder-test-utils": "^0.1.0"
+		"mocha": "^7.1.1"
 	},
 	"scripts": {
 		"test": "mocha ./test --recursive -R spec"
