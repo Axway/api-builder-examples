@@ -39,7 +39,7 @@ describe('flow-node typeof', () => {
 					outputs: {
 						next: {
 							name: 'Next',
-							description: 'The operation was successful.',
+							description: 'The type of data is getting printed.',
 							context: '$.type',
 							schema: {
 								type: 'string',
@@ -62,7 +62,7 @@ describe('flow-node typeof', () => {
 							description: 'An unexpected error was encountered.',
 							context: '$.error',
 							schema: {
-								type: 'string'
+								type: 'object'
 							}
 						}
 					}
@@ -131,8 +131,7 @@ describe('flow-node typeof', () => {
 				});
 	
 				expect(output).to.equal('next');
-				expect(value)
-					.to.equal(test.type);
+				expect(value).to.equal(test.type);
 			}
 			
 		});

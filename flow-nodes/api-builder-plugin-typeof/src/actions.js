@@ -18,7 +18,7 @@
  * @return {*} The response value (resolves to "next" output, or if the method
  *	 does not define "next", the first defined output).
  */
-async function getType(params, { logger }) {
+async function getType(params) {
 	const { data } = params;
 	// primitives: string, boolean, number, undefined, object, function, symbol, bigint
 	let type = typeof data;

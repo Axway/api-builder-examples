@@ -18,7 +18,7 @@ flow-nodes:
         # "Next" (next) output
         returns:
           name: Next
-          description: The operation was successful.
+          description: The type of data is getting printed.
           context: $.type
           schema:
             type: string
@@ -39,4 +39,4 @@ flow-nodes:
           description: An unexpected error was encountered.
           context: $.error
           schema:
-            type: string      
+            type: object      
