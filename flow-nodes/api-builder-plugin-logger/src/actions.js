@@ -19,7 +19,6 @@
  *	 does not define "next", the first defined output).
  */
 function log(params, { logger }) {
-
 	let { level, message } = params;
 
 	if (!level) {
@@ -31,7 +30,6 @@ function log(params, { logger }) {
 		throw new Error(`invalid log level: ${level}`);
 	}
 	logger[level](message);
-	return;
 }
 
 module.exports = {

@@ -10,7 +10,7 @@ flow-nodes:
         description: Writes to the output log.
         parameters:
           level:
-            name: Loglevel
+            name: Log level
             description: The log level to write to.
             required: false
             initialType: string
@@ -23,7 +23,7 @@ flow-nodes:
                 - error
               default: trace
           message:
-            name: Logmessage
+            name: Log message
             description: The log message.
             required: true
             initialType: string

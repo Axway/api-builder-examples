@@ -108,7 +108,7 @@ describe('flow-node logger', () => {
 			const { value, output } = await flowNode.log({
 				message: 'Hello'
 			});
-			
+			expect(console.trace.callCount).to.equal(1);
 			expect(output).to.equal('next');
 			expect(value).to.be.undefined;
 		});
@@ -121,6 +121,7 @@ describe('flow-node logger', () => {
 					level,
 					message: 'Hello'
 				});
+				expect(logger[level].callCount).to.equal(1);
 				expect(logger[level].lastCall.arg).to.equal('Hello');
 				expect(output).to.equal('next');
 				expect(value).to.be.undefined;
