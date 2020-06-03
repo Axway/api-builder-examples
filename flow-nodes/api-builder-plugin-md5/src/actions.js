@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+
 /**
  * Action method.
  *
@@ -26,9 +27,9 @@ function digest(params, { logger }) {
 		throw new Error('invalid argument: data');
 	}
 		const hash = crypto
-			.createHash('md5')
-			.update(data)
-			.digest('hex');
+						.createHash('md5')
+						.update(data)
+						.digest('hex');
 		return hash;
 }
 
