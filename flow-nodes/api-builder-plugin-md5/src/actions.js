@@ -20,16 +20,16 @@ const crypto = require('crypto');
  * @return {*} The response value (resolves to "next" output, or if the method
  *	 does not define "next", the first defined output).
  */
-function digest(params, { logger }) {
+function digest(params) {
 	const { data } = params;
 	if (data === undefined || data === null) {
 		throw new Error('invalid argument: data');
 	}
-		const hash = crypto
-				.createHash('md5')
-				.update(data)
-				.digest('hex');
-		return hash;
+	const hash = crypto
+		.createHash('md5')
+		.update(data)
+		.digest('hex');
+	return hash;
 }
 
 module.exports = {
