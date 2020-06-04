@@ -23,13 +23,12 @@ const crypto = require('crypto');
 function digest(params, { logger }) {
 	const { data } = params;
 	if (data === undefined || data === null) {
-		logger.error('invalid argument: data');
 		throw new Error('invalid argument: data');
 	}
 		const hash = crypto
-						.createHash('md5')
-						.update(data)
-						.digest('hex');
+				.createHash('md5')
+				.update(data)
+				.digest('hex');
 		return hash;
 }
 
