@@ -6,7 +6,7 @@ const actions = require('../src/actions');
 describe('flow-node typeof', () => {
 	let plugin;
 	let flowNode;
-	before(async () => {
+	beforeEach(async () => {
 		plugin = await MockRuntime.loadPlugin(getPlugin);
 		flowNode = plugin.getFlowNode('getType');
 	});
