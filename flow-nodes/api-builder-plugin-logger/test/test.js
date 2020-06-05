@@ -2,11 +2,17 @@ const getPlugin = require('../src');
 const actions = require('../src/actions');
 const { expect } = require('chai');
 const simple = require('simple-mock');
-const { MockRuntime } = require('@axway/api-builder-sdk');
+const { MockRuntime, MockLogger } = require('@axway/api-builder-test-utils');
 
 describe('flow-node logger', () => {
-	let runtime;
-	before(async () => runtime = new MockRuntime(await getPlugin()));
+	let logger;
+	let plugin;
+	let flowNode;
+	before(async () => {
+		logger = await MockLogger.create({ stub: () => simple.stub });
+		plugin = await MockRuntime.loadPlugin(getPlugin, {}, { logger });
+		flowNode = plugin.getFlowNode('logger');
+	});
 
 	beforeEach(() => {
 		simple.restore();
@@ -16,17 +22,20 @@ describe('flow-node logger', () => {
 		it('should define flow-nodes', () => {
 			expect(actions).to.be.an('object');
 			expect(actions.log).to.be.a('function');
-			expect(runtime).to.exist;
-			const flownode = runtime.getFlowNode('logger');
-			expect(flownode).to.be.a('object');
+			expect(plugin).to.be.a('object');
+			expect(plugin.getFlowNodeIds()).to.deep.equal([
+				'logger'
+			]);
+			expect(flowNode).to.be.a('object');
 
 			// Ensure the flow-node matches the spec
-			expect(flownode.name).to.equal('Logger');
-			expect(flownode.description).to.equal('Logger utility.');
-			expect(flownode.category).to.equal('general');
-			expect(flownode.icon).to.be.a('string');
-			expect(flownode.methods).to.deep.equal({
+			expect(flowNode.name).to.equal('Logger');
+			expect(flowNode.description).to.equal('Logger utility.');
+			expect(flowNode.category).to.equal('general');
+			expect(flowNode.icon).to.be.a('string');
+			expect(flowNode.methods).to.deep.equal({
 				log: {
+					name: 'Output Log',
 					description: 'Writes to the output log.',
 					parameters: {
 						level: {
@@ -34,9 +43,10 @@ describe('flow-node logger', () => {
 							required: false,
 							initialType: 'string',
 							schema: {
+								title: 'Log level',
 								type: 'string',
 								default: 'trace',
-								enum: [ 'trace', 'debug', 'warn', 'error', 'time', 'timeEnd' ]
+								enum: [ 'trace', 'debug', 'warn', 'error' ]
 							}
 						},
 						message: {
@@ -44,6 +54,7 @@ describe('flow-node logger', () => {
 							required: true,
 							initialType: 'string',
 							schema: {
+								title: 'Log message',
 								type: 'string'
 							}
 						}
@@ -51,12 +62,15 @@ describe('flow-node logger', () => {
 					outputs: {
 						next: {
 							name: 'Next',
+							description: 'The operation was successful.',
+							context: '$.log',
 							schema: {
 								type: 'string'
 							}
 						},
 						error: {
 							name: 'Error',
+							description: 'An unexpected error was encountered.',
 							context: '$.error',
 							schema: {
 								type: 'string'
@@ -72,60 +86,45 @@ describe('flow-node logger', () => {
 		// validation to avoid potential issues when API Builder loads your
 		// node.
 		it('should define valid flow-nodes', () => {
-			expect(runtime.validate()).to.not.throw;
+			// if this is invalid, it will throw and fail
+			plugin.validate();
 		});
 	});
 
 	describe('#hello', () => {
 		it('should error when logging at unknown level', async () => {
-			// Invoke #hello with a non-number and check error.
-			const flowNode = runtime.getFlowNode('logger');
-
-			const result = await flowNode.log({
+			const { value, output } = await flowNode.log({
 				level: 'foobar'
 			});
 
-			expect(result.callCount).to.equal(1);
-			expect(result.output).to.equal('error');
+			expect(output).to.equal('error');
 
-			expect(result.args[0]).to.equal(null);
-			expect(result.args[1]).to.be.instanceOf(Error)
-				.and.to.have.property('message', 'invalid log level: foobar');
-			expect(result.context).to.be.an('Object');
-			expect(result.context.error).instanceOf(Error)
+			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', 'invalid log level: foobar');
 		});
 
 		it('should log with default log level', async () => {
-			simple.mock(console, 'trace', () => {});
-			const flowNode = runtime.getFlowNode('logger');
-
-			const result = await flowNode.log({ message: 'Hello' });
-
-			expect(console.trace.callCount).to.equal(1);
-			expect(console.trace.lastCall.arg).to.equal('Hello');
-			expect(result.callCount).to.equal(1);
-			expect(result.output).to.equal('next');
-			expect(result.args).to.deep.equal([]);
-			expect(result.context).to.be.undefined;
+			simple.mock(logger, 'trace', () => {});	
+			const { value, output } = await flowNode.log({
+				message: 'Hello'
+			});
+			expect(logger.trace.callCount).to.equal(1);
+			expect(output).to.equal('next');
+			expect(value).to.be.undefined;
 		});
 
 		for (const level of [ 'trace', 'debug', 'warn', 'error' ]) {
 			it(`should log at log level ${level}`, async () => {
-				simple.mock(console, level, () => {});
-				const flowNode = runtime.getFlowNode('logger');
-
-				const result = await flowNode.log({
+				 
+				simple.mock(logger, level, () => {});	
+				const { value, output } = await flowNode.log({
 					level,
 					message: 'Hello'
 				});
-
-				expect(console[level].callCount).to.equal(1);
-				expect(console[level].lastCall.arg).to.equal('Hello');
-				expect(result.callCount).to.equal(1);
-				expect(result.output).to.equal('next');
-				expect(result.args).to.deep.equal([]);
-				expect(result.context).to.be.undefined;
+				expect(logger[level].callCount).to.equal(1);
+				expect(logger[level].lastCall.arg).to.equal('Hello');
+				expect(output).to.equal('next');
+				expect(value).to.be.undefined;
 			});
 		}
 	});
