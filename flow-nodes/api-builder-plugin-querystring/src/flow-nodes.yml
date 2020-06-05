@@ -58,7 +58,7 @@ flow-nodes:
             schema:
               type: string
           sep:
-            name: Substring sep
+            name: Key/value separator
             description: The substring used to delimit key and value pairs in the query string.
             required: false            
             initialType: string
@@ -66,7 +66,7 @@ flow-nodes:
               type: string
               default: '&'
           eq:
-            name: Substring eq
+            name: Key/value separator
             description: The substring used to delimit keys and values in the query string.
             required: false            
             initialType: string
