@@ -5,28 +5,38 @@ flow-nodes:
     description: Gets the type of data
     category: general
     methods:
-      getType:
+      getType: # This same key is used in `actions.js`
         name: Get Type
         description: Gets the type of data
         parameters:
           data:
+            name: Data
             description: The data that you want to find the type of.
             required: true
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.type
             schema:
               type: string
-              enum:
-                - array
-                - bigint
-                - boolean
-                - function
-                - "null"
-                - number
-                - object
-                - string
-                - symbol
-                - undefined
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The type of data is getting printed.
+          context: $.type
+          schema:
+            type: string
+            enum:
+              - array
+              - bigint
+              - boolean
+              - function
+              - "null"
+              - number
+              - object
+              - string
+              - symbol
+              - undefined
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: object      
