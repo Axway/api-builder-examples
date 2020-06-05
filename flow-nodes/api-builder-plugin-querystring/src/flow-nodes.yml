@@ -5,17 +5,19 @@ flow-nodes:
     description: The querystring flow-node provides utilities for parsing and formatting URL query strings.
     category: general
     methods:
-      encode:
+      encode: # This same key is used in `actions.js`
         name: Encode URL Query String
         description: Parses a URL query string into a collection of key and value pairs.
         parameters:
           obj:
+            name: URL Query String
             description: The object to serialize into a URL query string.
             required: true
             initialType: object
             schema:
               type: object
           sep:
+            name: Substring sep
             description: The substring used to delimit key and value pairs in the query string.
             required: false            
             initialType: string
@@ -23,36 +25,40 @@ flow-nodes:
               type: string
               default: '&'
           eq:
+            name: Substring eq
             description: The substring used to delimit keys and values in the query string.
             required: false                        
             initialType: string
             schema:
               type: string
               default: '='             
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.encodedString
-            schema:
-              type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
-      decode:
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.encodedString
+          schema:
+            type: string
+         # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
+      decode: # This same key is used in `actions.js`
         name: Decode URL Query String
         description: Produces a URL query string from a given obj by iterating through the object's "own properties".
         parameters:
           str:
+            name: URL query string
             description: The URL query string to encode.
             required: true
             initialType: string
             schema:
               type: string
           sep:
+            name: Key/value separator
             description: The substring used to delimit key and value pairs in the query string.
             required: false            
             initialType: string
@@ -60,68 +66,74 @@ flow-nodes:
               type: string
               default: '&'
           eq:
+            name: Key/value separator
             description: The substring used to delimit keys and values in the query string.
             required: false            
             initialType: string
             schema:
               type: string
               default: '='             
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.decodedObject
-            schema:
-              type: object
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
-      escape:
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.decodedObject
+          schema:
+            type: object
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
+      escape: # This same key is used in `actions.js`
         name: URL Percent-Encode String
         description: Performs URL percent-encoding on the given string.
         parameters:
           str:
+            name: Encode string
             description: The string to be encoded.
             required: true
             initialType: string
             schema:
               type: string
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.encodedStr
-            schema:
-              type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
-      unescape:
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.encodedStr
+          schema:
+            type: string
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
+      unescape: # This same key is used in `actions.js`
         name: Decode URL Percent-Encoded String
         description: Performs decoding of URL percent-encoded characters on the given string.
         parameters:
           str:
+            name: Encode string
             description: The string to decode.
             required: true
             initialType: string
             schema:
               type: string
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.decodedStr
-            schema:
-              type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The operation was successful.
+          context: $.decodedStr
+          schema:
+            type: string
+         # "Error" (error) output
+        throws:
+          name: Error
+          description: An unexpected error was encountered.
+          context: $.error
+          schema:
+            type: string
