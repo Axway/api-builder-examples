@@ -12,7 +12,7 @@ const actions = require('./actions');
  * @param {string} options.logger - An API Builder logger scoped for this plugin
  * @returns {object} An API Builder plugin.
  */
-async function getPlugin(pluginConfig, options) {
+async function getPlugin(pluginConfig) {
 	const sdk = new SDK({ pluginConfig });
 	sdk.load(path.resolve(__dirname, 'flow-nodes.yml'), actions);
 	return sdk.getPlugin();
