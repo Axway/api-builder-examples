@@ -6,7 +6,7 @@ const { MockRuntime } = require('@axway/api-builder-test-utils');
 describe('flow-node querystring', () => {
 	let plugin;
 	let flowNode;
-	before(async () => {
+	beforeEach(async () => {
 		plugin = await MockRuntime.loadPlugin(getPlugin);
 		flowNode = plugin.getFlowNode('querystring');
 	});
