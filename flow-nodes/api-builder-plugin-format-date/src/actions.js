@@ -21,24 +21,60 @@ const moment = require('moment');
  *	 does not define "next", the first defined output).
  */
 function formatDate(params) {
-	const { date, format } = params;
+	let { date, format, offset } = params;
 
-	if (!date) {
-		throw new Error('Missing required parameter: date');
-	}
-	if (!format) {
-		throw new Error('Missing required parameter: format');
+  let formattedDate;
+  let dateString = (!date) ? date : date.toString(); // Convert any date input such as "new Date('2020-01-08T13:24:40+02:00')" to a string.
+  let dateWithNoOrdinal = (!date) ? date : dateString.replace(/(\d+)(st|nd|rd|th)/, "$1");
+  let dateMoment = moment(dateWithNoOrdinal);
+  let isDate = dateMoment.isValid();
+  let formatWithNoOrdinal = (!format) ? format : format.replace(/Do/g, 'D');
+
+  if (!date && !format) {
+    if (offset) {
+      formattedDate = moment().utcOffset(offset).format();
+    } else {
+      formattedDate = moment().format('YYYY-MM-DDTHH:mm:ssZ');
+    }
 	}
 
-	// There is no sanity check on the formats in Moment.js, so an invalid format could be
-	// specified. As this is a wrapper, I won't be introducing additional format validation.
-	const formattedDate = moment(date).format(format);
+  else if (isDate === true && !format) {
+    if (!offset) {
+      formattedDate = dateMoment.format();
+    } else {
+      formattedDate = dateMoment.utcOffset(offset).format();
+    }
+  }
+  // Format current date (if date parameter not entered) based on the format entered.
+  else if (!date && format) {
+    // Verify if the current date to be formatted will be a valid date after the passed in format is applied.
+    let dateOutputToBe = moment().format(formatWithNoOrdinal);
+    let isValidDateFormat = moment(moment(dateOutputToBe).format()).isValid();
 
-	// Moment doesn't throw an error if the passed in date is invalid it just returns 'Invalid date'
-	if (formattedDate === 'Invalid date') {
-		throw new Error(`Invalid date: '${date}`);
-	}
-	return formattedDate;
+    if (isValidDateFormat === true) {
+      formattedDate = moment().format(format);
+    } else {
+      throw new Error(`Invalid Format: '${format}`);
+    }
+  }
+  // Format the entered date based on the format entered
+  else if (isDate === true && format) {
+    // Verify if the entered date to be formatted will be a valid date after the entered format is applied.
+    let dateOutputToBe = moment(dateWithNoOrdinal).format(formatWithNoOrdinal);
+    let isValidDateFormat = moment(moment(dateOutputToBe).format()).isValid();
+
+    if (isValidDateFormat === true) {
+      formattedDate = moment(dateWithNoOrdinal).format(format);
+    } else {
+      throw new Error(`Invalid Format: '${format}`);
+    }
+  }
+
+  else {
+    throw new Error(`Invalid Date: '${date}`);
+  }
+
+  return formattedDate;
 }
 
 module.exports = {

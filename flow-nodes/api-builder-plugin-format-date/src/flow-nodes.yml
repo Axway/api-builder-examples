@@ -11,15 +11,22 @@ flow-nodes:
         parameters:
           date:
             name: Date
-            description: The date to be formatted.
-            required: true
+            description: The date to be formatted example 2020/08/19. Disabling/not entering a date shows current date. See more valid date examples here https://momentjs.com/docs/#/parsing/string/
+            required: false
             initialType: string
             schema:
               type: string
           format:
             name: Format
-            description: The desired format. Supports all Moment.js supported formats.
-            required: true
+            description: The desired format. Supports all Moment.js formats for dates example YYYY-MM-DDTHH:mm:ssZ. See more valid format examples https://momentjs.com/docs/#/parsing/special-formats/
+            required: false
+            initialType: string
+            schema:
+              type: string
+          offset:
+            name: Time zone UTC offset
+            description: The desired time zone UTC offset. Supports Moment.js UTC offset format for only strings. Example +08:45, -02:00. See https://momentjscom.readthedocs.io/en/latest/moment/03-manipulating/09-utc-offset/
+            required: false
             initialType: string
             schema:
               type: string
