@@ -27,24 +27,23 @@ function formatDate(params) {
   const momentObj = moment(date);
 
   if (!momentObj.isValid()) {
- 		throw new Error(`Invalid date: ${date}`);
- 	}
+    throw new Error(`Invalid date: ${date}`);
+  }
 
   if (offset) {
-    const pattern = new RegExp('^[+-][0-1][0-9]:[0-5][0-9]$');
-    const isValidOffset = pattern.test(offset);
-    if (isValidOffset === true) {
+    const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
+    if (offset.match(pattern)) {
       momentObj.utcOffset(offset);
     } else {
       throw new Error(`Invalid UTC offset: ${offset}`);
     }
   } else {
- 		momentObj.utc();
- 	}
+    momentObj.utc();
+  }
   // Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
- 	return momentObj.format(format);
- }
+  return momentObj.format(format);
+}
 
 module.exports = {
-	formatDate
+  formatDate
 };

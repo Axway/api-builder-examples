@@ -36,16 +36,17 @@ describe('flow-node format-date', () => {
 					description: 'Formats a date. See Moment.js format() method.',
 					parameters: {
 						date: {
-							description: 'The date to be formatted (e.g. "2020-08-19"). Defaults to current date/time. For more information, see https://momentjs.com/docs/#/parsing/string/',
+							description: 'The date to be formatted. Defaults to current date/time. For more information, see https://momentjs.com/docs/#/parsing/string/',
 							required: false,
 							initialType: 'string',
 							schema: {
 								type: 'string',
-								title: 'Date'
+								title: 'Date',
+								example: [ new Date('2020-08-19') ]
 							}
 						},
 						format: {
-							description: 'The desired format. Defaults to ISO-8601 format. Supports all Moment.js formats. See more valid format examples https://momentjs.com/docs/#/parsing/special-formats/',
+							description: 'Takes a string of tokens and replaces them with their corresponding values. Defaults to ISO-8601 format. For the full list of supported tokens and examples, see https://momentjs.com/docs/#/parsing/special-formats/',
 							required: false,
 							initialType: 'string',
 							schema: {
@@ -55,12 +56,12 @@ describe('flow-node format-date', () => {
 							}
 						},
 						offset: {
-							description: 'The desired time zone UTC (e.g. +01:00). See Moment.js UTC offset string format in https://momentjscom.readthedocs.io/en/latest/moment/03-manipulating/09-utc-offset/',
+							description: 'The desired UTC Offset in the format ±[hh]:[mm]',
 							required: false,
 							initialType: 'string',
 							schema: {
 								type: 'string',
-								title: 'Time zone UTC offset',
+								title: 'UTC Offset',
 								pattern: '^[+-][0-1][0-9]:[0-5][0-9]$'
 							}
 						}
