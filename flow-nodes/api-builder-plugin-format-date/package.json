@@ -21,7 +21,8 @@
 	},
 	"dependencies": {
 		"@axway/api-builder-sdk": "^1.0.0",
-		"moment": "^2.24.0"
+		"moment": "^2.24.0",
+		"simple-mock": "^0.8.0"
 	},
 	"peerDependencies": {
 		"@axway/api-builder-runtime": "^4.5.0"

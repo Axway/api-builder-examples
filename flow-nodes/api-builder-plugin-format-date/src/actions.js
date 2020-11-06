@@ -21,61 +21,29 @@ const moment = require('moment');
  *	 does not define "next", the first defined output).
  */
 function formatDate(params) {
-	let { date, format, offset } = params;
+  const { date, format, offset } = params;
 
-  let formattedDate;
-  let dateString = (!date) ? date : date.toString(); // Convert any date input such as "new Date('2020-01-08T13:24:40+02:00')" to a string.
-  let dateWithNoOrdinal = (!date) ? date : dateString.replace(/(\d+)(st|nd|rd|th)/, "$1");
-  let dateMoment = moment(dateWithNoOrdinal);
-  let isDate = dateMoment.isValid();
-  let formatWithNoOrdinal = (!format) ? format : format.replace(/Do/g, 'D');
+  // Defaults to now
+  const momentObj = moment(date);
 
-  if (!date && !format) {
-    if (offset) {
-      formattedDate = moment().utcOffset(offset).format();
+  if (!momentObj.isValid()) {
+ 		throw new Error(`Invalid date: ${date}`);
+ 	}
+
+  if (offset) {
+    const pattern = new RegExp('^[+-][0-1][0-9]:[0-5][0-9]$');
+    const isValidOffset = pattern.test(offset);
+    if (isValidOffset === true) {
+      momentObj.utcOffset(offset);
     } else {
-      formattedDate = moment().format('YYYY-MM-DDTHH:mm:ssZ');
+      throw new Error(`Invalid UTC offset: ${offset}`);
     }
-	}
-
-  else if (isDate === true && !format) {
-    if (!offset) {
-      formattedDate = dateMoment.format();
-    } else {
-      formattedDate = dateMoment.utcOffset(offset).format();
-    }
-  }
-  // Format current date (if date parameter not entered) based on the format entered.
-  else if (!date && format) {
-    // Verify if the current date to be formatted will be a valid date after the passed in format is applied.
-    let dateOutputToBe = moment().format(formatWithNoOrdinal);
-    let isValidDateFormat = moment(moment(dateOutputToBe).format()).isValid();
-
-    if (isValidDateFormat === true) {
-      formattedDate = moment().format(format);
-    } else {
-      throw new Error(`Invalid Format: '${format}`);
-    }
-  }
-  // Format the entered date based on the format entered
-  else if (isDate === true && format) {
-    // Verify if the entered date to be formatted will be a valid date after the entered format is applied.
-    let dateOutputToBe = moment(dateWithNoOrdinal).format(formatWithNoOrdinal);
-    let isValidDateFormat = moment(moment(dateOutputToBe).format()).isValid();
-
-    if (isValidDateFormat === true) {
-      formattedDate = moment(dateWithNoOrdinal).format(format);
-    } else {
-      throw new Error(`Invalid Format: '${format}`);
-    }
-  }
-
-  else {
-    throw new Error(`Invalid Date: '${date}`);
-  }
-
-  return formattedDate;
-}
+  } else {
+ 		momentObj.utc();
+ 	}
+  // Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
+ 	return momentObj.format(format);
+ }
 
 module.exports = {
 	formatDate

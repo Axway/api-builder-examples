@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { MockRuntime } = require('@axway/api-builder-test-utils');
 const getPlugin = require('../src');
 const actions = require('../src/actions');
-const moment = require('moment');
+const simple = require('simple-mock');
 
 describe('flow-node format-date', () => {
 	let plugin;
@@ -36,7 +36,7 @@ describe('flow-node format-date', () => {
 					description: 'Formats a date. See Moment.js format() method.',
 					parameters: {
 						date: {
-							description: 'The date to be formatted example 2020/08/19. Disabling/not entering a date shows current date. See more valid date examples here https://momentjs.com/docs/#/parsing/string/',
+							description: 'The date to be formatted (e.g. "2020-08-19"). Defaults to current date/time. For more information, see https://momentjs.com/docs/#/parsing/string/',
 							required: false,
 							initialType: 'string',
 							schema: {
@@ -45,21 +45,23 @@ describe('flow-node format-date', () => {
 							}
 						},
 						format: {
-							description: 'The desired format. Supports all Moment.js formats for dates example YYYY-MM-DDTHH:mm:ssZ. See more valid format examples https://momentjs.com/docs/#/parsing/special-formats/',
+							description: 'The desired format. Defaults to ISO-8601 format. Supports all Moment.js formats. See more valid format examples https://momentjs.com/docs/#/parsing/special-formats/',
 							required: false,
 							initialType: 'string',
 							schema: {
 								type: 'string',
-								title: 'Format'
+								title: 'Format',
+								default: 'YYYY-MM-DDTHH:mm:ssZ'
 							}
 						},
 						offset: {
-							description: 'The desired time zone UTC offset. Supports Moment.js UTC offset format for only strings. Example +08:45, -02:00. See https://momentjscom.readthedocs.io/en/latest/moment/03-manipulating/09-utc-offset/',
+							description: 'The desired time zone UTC (e.g. +01:00). See Moment.js UTC offset string format in https://momentjscom.readthedocs.io/en/latest/moment/03-manipulating/09-utc-offset/',
 							required: false,
 							initialType: 'string',
 							schema: {
 								type: 'string',
-								title: 'Time zone UTC offset'
+								title: 'Time zone UTC offset',
+								pattern: '^[+-][0-1][0-9]:[0-5][0-9]$'
 							}
 						}
 					},
@@ -96,6 +98,10 @@ describe('flow-node format-date', () => {
 
 	describe('#formatDate method', () => {
 
+		afterEach(() => {
+			simple.restore();
+		});
+
 		it('should format the input date when passed as string', async () => {
 
 			const { value, output } = await flowNode.formatDate({
@@ -117,301 +123,84 @@ describe('flow-node format-date', () => {
 			expect(value).to.equal('01/08/2020');
 		});
 
-		/**
-		 * Check some of the available formats that Moment.js provides.
-		 */
-		it('should format date as expected with different formats', async () => {
+		it('should format a valid date input with a customised input format', async () => {
 
-			const testDate = '2020-01-08T13:24:40+02:00';
-			const testData = [
-				{
-					format: 'MMMM D YYYY, h:mm:ss a',
-					formatted: 'January 8 2020, 11:24:40 am'
-				},
-				{
-					format: 'D MMMM YYYY, h:mm:ss a',
-					formatted: '8 January 2020, 11:24:40 am'
-				},
-				{
-					format: 'YYYY D MMMM, h:mm:ss a',
-					formatted: '2020 8 January, 11:24:40 am'
-				},
-				{
-					format: 'dddd MMMM D YYYY, h:mm:ss a',
-					formatted: 'Wednesday January 8 2020, 11:24:40 am'
-				},
-				{
-					format: 'YYYY-MM-DDTHH:mm',
-					formatted: '2020-01-08T11:24'
-				},
-				{
-					format: 'YYYY-MM-DDTHH:mm:ss',
-					formatted: '2020-01-08T11:24:40'
-				},
-				{
-					format: 'YYYY-MM-DDTHH:mm:ss.SSS',
-					formatted: '2020-01-08T11:24:40.000'
-				},
-				{
-					format: 'YYYY-MM-DDTHH:mm:ssZ',
-					formatted: '2020-01-08T11:24:40+00:00'
-				},
+			const testFormat = '[It\'s the] Do [day of the month] [of] MMMM.';
+			const { value, output } = await flowNode.formatDate({
+				date: '2020-01-08T13:24:40+02:00',
+				format: testFormat
+			});
 
-				{
-					format: 'MMMM Do YYYY, h:mm:ss a',
-					formatted: 'January 8th 2020, 11:24:40 am'
-				},
-				{
-					format: 'Do MMMM YYYY, h:mm:ss a',
-					formatted: '8th January 2020, 11:24:40 am'
-				},
-				{
-					format: 'YYYY Do MMMM, h:mm:ss a',
-					formatted: '2020 8th January, 11:24:40 am'
-				},
-				{
-					format: 'dddd MMMM Do YYYY, h:mm:ss a',
-					formatted: 'Wednesday January 8th 2020, 11:24:40 am'
-				},
-				{
-					format: 'MMMM dddd Do YYYY, h:mm:ss a',
-					formatted: 'January Wednesday 8th 2020, 11:24:40 am'
-				},
-				{
-					format: 'MMMM Do YYYY',
-					formatted: 'January 8th 2020'
-				},
-				{
-					format: 'MMMM YYYY Do',
-					formatted: 'January 2020 8th'
-				},
-				{
-					format: 'Do MMMM YYYY',
-					formatted: '8th January 2020'
-				},
-				{
-					format: 'Do YYYY MMMM',
-					formatted: '8th 2020 January'
-				},
-				{
-					format: 'YYYY-MMMM-Do',
-					formatted: '2020-January-8th'
-				},
-				{
-					format: 'YYYY/MMMM/Do',
-					formatted: '2020/January/8th'
-				},
-
-				{
-					format: 'GGGG-[W]WW',
-					formatted: '2020-W02'
-				},
-				{
-					format: 'DD MMMM',
-					formatted: '08 January'
-				},
-				{
-					format: 'MMMM YYYY',
-					formatted: 'January 2020'
-				},
-				{
-					format: 'YYYY-MM',
-					formatted: '2020-01'
-				},
-				{
-					format: 'YYYY-MM-DD',
-					formatted: '2020-01-08'
-				},
-				{
-					format: 'MM/DD/YYYY',
-					formatted: '01/08/2020'
-				},
-				{
-					format: 'MMMM-YYYY-DD',
-					formatted: 'January-2020-08'
-				},
-				{
-					format: 'L',
-					formatted: '01/08/2020'
-				},
-				{
-					format: 'LL',
-					formatted: 'January 8, 2020'
-				},
-				{
-					format: 'LLL',
-					formatted: 'January 8, 2020 11:24 AM'
-				},
-				{
-					format: 'LLLL',
-					formatted: 'Wednesday, January 8, 2020 11:24 AM'
-				}
-			];
-			for (const test of testData) {
-				const { value, output } = await flowNode.formatDate({
-					date: testDate,
-					format: test.format
-				});
-				expect(output).to.equal('next');
-				expect(value).to.equal(test.formatted);
-			}
+			expect(output).to.equal('next');
+			const momentResult = 'It\'s the 8th day of the month of January.';
+			expect(value).to.equal(momentResult);
 		});
-
-		/**
-		 * Check some of the available date and format strings that Moment.js provides.
-		 */
-		it('should format different valid dates as expected with different formats', async () => {
-
-			const testData = [
-				{
-					date: 'January 8 2020, 11:24:40 am',
-					format: 'YYYY-MM-DDTHH:mm:ssZ',
-					formatted: '2020-01-08T11:24:40+00:00'
-				},
-				{
-					date: '20200108',
-					format: 'YYYY-MM-DD',
-					formatted: '2020-01-08'
-				},
-				{
-					date: '2020/01/08',
-					format: 'YYYY Do MMMM, h:mm:ss a',
-					formatted: '2020 8th January, 12:00:00 am'
-				},
-				{
-					date: '2020 8th January',
-					format: 'll',
-					formatted: 'Jan 8, 2020'
-				},
-				{
-					date: 'Mar 2020 11th',
-					format: 'GGGG-[W]WW',
-					formatted: '2020-W11'
-				},
-				{
-					date: 'January-2020-08',
-					format: 'dddd MMMM Do YYYY',
-					formatted: 'Wednesday January 8th 2020'
-				}
-			];
-			for (const test of testData) {
-				const { value, output } = await flowNode.formatDate({
-					date: test.date,
-					format: test.format
-				});
-				expect(output).to.equal('next');
-				expect(value).to.equal(test.formatted);
-			}
-		});
-
-		/**
-	 	 * Momentjs apparently works fine on dates with wrong spelling of the month
-		 * provided the month's abbreviated spelling (eg. Dec for December) is matched.
-		 * For these tests, we expect it to pass since the short or full version spelling matches.
-		 */
-		it('should NOT FAIL to format these WRONGLY SPELT MONTHS in dates of this formats', async () => {
-
-			const testData = [
-				{
-					date: '2020 8th Januarydfmjfhjkgh',
-					format: 'lll',
-					formatted: 'Jan 8, 2020 12:00 AM'
-				},
-				{
-					date: '2020 8th Januadfmjfhjkgh',
-					format: 'l',
-					formatted: '1/8/2020'
-				},
-				{
-					date: '2020 8 Jandfmjfhjkgh',
-					format: 'llll',
-					formatted: 'Wed, Jan 8, 2020 12:00 AM'
-				},
-				{
-					date: 'Octghgkjhg/09/2020',
-					format: 'dddd MMMM Do YYYY',
-					formatted: 'Friday October 9th 2020'
-				},
-
-				{
-					date: 'Octoberghgkjhg/09/2020',
-					format: 'MMMM D YYYY',
-					formatted: 'October 9 2020'
-				}
-			];
-			for (const test of testData) {
-				const { value, output } = await flowNode.formatDate({
-					date: test.date,
-					format: test.format
-				});
-				expect(output).to.equal('next');
-				expect(value).to.equal(test.formatted);
-			}
-		});
-
 
 		/**
 		 * Momentjs apparently works fine on dates with wrong spelling of the month
-		 * provided the month's abbreviated spelling (eg. Dec for December) is matched.
-		 * For these tests, we expect it to FAIL since the short or full version spellings do not match.
+		 * provided the month's abbreviated spelling (eg. Jan for January) is matched.
+		 * For this test, we expect it to FAIL since the short spelling doesn't match.
 		 */
-		it('should FAIL to format these WRONGLY SPELT MONTHS in dates of this formats', async () => {
+		it('should fail to format a date with month spelt wrongly', async () => {
 
-			const testData = [
-				{
-					date: '2020 8th Jaunary',
-					format: 'lll'
-				},
-				{
-					date: '2020 8 Jadfmjfhjkgh',
-					format: 'llll'
-				},
-				{
-					date: 'Ocghgkjhg/09/2020',
-					format: 'dddd MMMM Do YYYY'
-				},
-				{
-					date: 'Oktober/09/2020',
-					format: 'MMMM D YYYY'
-				}
-			];
-			for (const test of testData) {
-				const { value, output } = await flowNode.formatDate({
-					date: test.date,
-					format: test.format
-				});
+			const testDate = '2020 8 Jaunary';
+			const { value, output } = await flowNode.formatDate({
+				date: testDate,
+				format: 'lll'
+			});
 
-				let expectedMessage = `Invalid Date: '${test.date}`;
-				expect(value).to.be.instanceOf(Error)
-					.and.to.have.property('message', expectedMessage);
-			}
+			const expectedMessage = `Invalid date: ${testDate}`;
+			expect(value).to.be.instanceOf(Error)
+				.and.to.have.property('message', expectedMessage);
 		});
 
-		it('should format current date in "YYYY-MM-DDTHH:mm:ssZ" format if format and date parameters are disabled/empty', async () => {
+		it('should format current date to default format if format and date parameters are disabled', async () => {
 
-			const defaultFormat = 'YYYY-MM-DDTHH:mm:ssZ';
+			// 2010-10-10T10:10:10Z
+			const now = 1286705410000;
+			simple.mock(Date, 'now').returnWith(now);
+
 			const { value, output } = await flowNode.formatDate({
-				date: '',
+				date: undefined,
+				format: undefined
+			});
+
+			expect(output).to.equal('next');
+			expect(value).to.equal('2010-10-10T10:10:10Z');
+		});
+
+		it('should format current date to default format if date parameter is disabled and format empty', async () => {
+
+			// 2010-10-10T10:10:10Z
+			const now = 1286705410000;
+			simple.mock(Date, 'now').returnWith(now);
+
+			const { value, output } = await flowNode.formatDate({
+				date: undefined,
 				format: ''
 			});
 
 			expect(output).to.equal('next');
-			expect(value).to.equal(moment().format(defaultFormat));
+			expect(value).to.equal('2010-10-10T10:10:10Z');
 		});
 
-		it('should format current date per valid format input if date parameter is disabled/empty', async () => {
+		it('should format current date per valid format input if date parameter is disabled', async () => {
+
+			// 2010-10-10T10:10:10Z
+			const now = 1286705410000;
+			simple.mock(Date, 'now').returnWith(now);
 
 			const inputFormat = 'LL';
 			const { value, output } = await flowNode.formatDate({
-				date: '',
+				date: undefined,
 				format: 'LL'
 			});
 
 			expect(output).to.equal('next');
-			expect(value).to.equal(moment().format(inputFormat));
+			expect(value).to.equal('October 10, 2010');
 		});
 
-		it('should format a valid date input successfully with default momentjs format if format disabled/empty', async () => {
+		it('should format a valid date input with the default format if format disabled/empty', async () => {
 
 			const testDate = '2020-10-23';
 			const { value, output } = await flowNode.formatDate({
@@ -420,10 +209,10 @@ describe('flow-node format-date', () => {
 			});
 
 			expect(output).to.equal('next');
-			expect(value).to.equal('2020-10-23T00:00:00+01:00');
+			expect(value).to.equal('2020-10-22T23:00:00Z');
 		});
 
-		it('should apply successfully a valid UTC offset to a valid date input if format is disabled/empty', async () => {
+		it('should apply a valid UTC offset to a valid date input if format is disabled/empty', async () => {
 
 			const testDate = '2020-10-23T21:18:30+01:00';
 			const { value, output } = await flowNode.formatDate({
@@ -436,33 +225,22 @@ describe('flow-node format-date', () => {
 			expect(value).to.equal('2020-10-23T23:18:30+03:00');
 		});
 
-		it('should NOT apply an invalid UTC offset to a valid date input if format is disabled/empty', async () => {
+		it('should fail to apply an invalid UTC offset to a valid date input if format is disabled/empty', async () => {
 
 			const testDate = '2020-10-23T21:18:30+01:00';
+			const offsetVal = '03:00';
 			const { value, output } = await flowNode.formatDate({
 				date: testDate,
-				format: '',
-				offset: '03:00'
-			});
-
-			expect(output).to.equal('next');
-			expect(value).to.equal(testDate);
-		});
-
-		it('should apply successfully a valid UTC offset to current date if date and format are disabled/empty', async () => {
-
-			const offsetVal = '+03:00';
-			const { value, output } = await flowNode.formatDate({
-				date: '',
 				format: '',
 				offset: offsetVal
 			});
 
-			expect(output).to.equal('next');
-			expect(value).to.equal(moment().utcOffset(offsetVal).format());
+			const expectedMessage = `Invalid UTC offset: ${offsetVal}`;
+			expect(value).to.be.instanceOf(Error)
+				.and.to.have.property('message', expectedMessage);
 		});
 
-		it('should apply successfully a valid format on a valid date ahead of valid offset if all parameters enabled and valid', async () => {
+		it('should apply a valid format input on a valid date input ahead of valid offset input', async () => {
 
 			const testDate = '2020-10-23T21:18:30+01:00';
 			const offsetVal = '+03:00';
@@ -476,7 +254,7 @@ describe('flow-node format-date', () => {
 			expect(value).to.equal('October 23, 2020');
 		});
 
-		it('should not apply a valid utc offset to an invalid date', async () => {
+		it('should fail to apply a valid UTC offset to an invalid date if format is disabled/empty', async () => {
 
 			const invalidDate = 'clearly-not-a-date';
 			const offsetVal = '+03:00';
@@ -486,7 +264,20 @@ describe('flow-node format-date', () => {
 				offset: offsetVal
 			});
 
-			const expectedMessage = `Invalid Date: '${invalidDate}`;
+			const expectedMessage = `Invalid date: ${invalidDate}`;
+			expect(value).to.be.instanceOf(Error)
+				.and.to.have.property('message', expectedMessage);
+		});
+
+		it('should fail to format an empty date despite valid format input', async () => {
+
+			const testDate = '';
+			const { value, output } = await flowNode.formatDate({
+				date: testDate,
+				format: 'L'
+			});
+
+			const expectedMessage = `Invalid date: ${testDate}`;
 			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', expectedMessage);
 		});
@@ -499,7 +290,7 @@ describe('flow-node format-date', () => {
 				format: 'L'
 			});
 
-			const expectedMessage = `Invalid Date: '${invalidDate}`;
+			const expectedMessage = `Invalid date: ${invalidDate}`;
 			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', expectedMessage);
 		});
@@ -512,51 +303,25 @@ describe('flow-node format-date', () => {
 				format: 'clearly-not-a-format'
 			});
 
-			const expectedMessage = `Invalid Date: '${invalidDate}`;
-			expect(value).to.be.instanceOf(Error)
-				.and.to.have.property('message', expectedMessage);
-		});
-
-		it('should fail to format a valid date input with invalid input format', async () => {
-
-			const invalidFormat = 'clearly-not-a-format';
-			const { value, output } = await flowNode.formatDate({
-				date: '2020-10-23T21:18:30+01:00',
-				format: invalidFormat
-			});
-
-			const expectedMessage = `Invalid Format: '${invalidFormat}`;
+			const expectedMessage = `Invalid date: ${invalidDate}`;
 			expect(value).to.be.instanceOf(Error)
 				.and.to.have.property('message', expectedMessage);
 		});
 
 		/**
-		 * Expect these VALID formats (which when applied to a valid date returns a specific
-		 * portion of the valid date input eg. day or month), to turn out as INVALID format
-		 * since applying moment on the resulting formatted date output yields an invalid date
+		 * There is no sanity check on the formats in Moment.js, so an invalid format could
+		 * be specified. As this is simply a wrapper node, we expect this to be allowed.
 		 */
-		 it('should FAIL to format a valid date input with these valid formats', async () => {
+		it('should not fail to format a valid date input with invalid format input', async () => {
 
-			 const testDate = '2020-10-23';
-			 const testData = [
-				 { format: 'MMM' },
-				 { format: 'MMMM' },
-				 { format: 'dd' },
-				 { format: 'ddd' },
-				 { format: 'dddd' },
-				 { format: 'YYYY [escaped] YYYY' }
-			 ];
-			 for (const test of testData) {
-				 const { value, output } = await flowNode.formatDate({
-					 date: testDate,
-					 format: test.format
-				 });
-				 // expect(output).to.equal('next');
-				 // expect(value).to.equal(test.formatted);
-				 const expectedMessage = `Invalid Format: '${test.format}`;
-				 expect(value).to.be.instanceOf(Error)
-						.and.to.have.property('message', expectedMessage);
-			 }
-		 });
+			const invalidFormat = 'ooooo';
+			const { value, output } = await flowNode.formatDate({
+				date: '2020-01-08T13:24:40+02:00',
+				format: invalidFormat
+			});
+
+			expect(output).to.equal('next');
+			expect(value).to.equal('ooooo');
+		});
 	});
 });
