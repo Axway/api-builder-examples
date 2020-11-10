@@ -30,6 +30,8 @@ function formatDate(params) {
     throw new Error(`Invalid date: ${date}`);
   }
 
+  // UTC offsets (https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) are
+  // between -12 to +14, e.g. "-09:00", "+13:30"
   if (offset) {
     const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
     if (offset.match(pattern)) {
