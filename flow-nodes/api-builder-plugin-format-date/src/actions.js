@@ -21,31 +21,31 @@ const moment = require('moment');
  *	 does not define "next", the first defined output).
  */
 function formatDate(params) {
-  const { date, format, offset } = params;
+	const { date, format, offset } = params;
 
-  // Defaults to now
-  const momentObj = moment(date);
+	// Defaults to now
+	const momentObj = moment(date);
 
-  if (!momentObj.isValid()) {
-    throw new Error(`Invalid date: ${date}`);
-  }
+	if (!momentObj.isValid()) {
+		throw new Error(`Invalid date: ${date}`);
+	}
 
-  // UTC offsets (https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) are
-  // between -12 to +14, e.g. "-09:00", "+13:30"
-  if (offset) {
-    const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
-    if (offset.match(pattern)) {
-      momentObj.utcOffset(offset);
-    } else {
-      throw new Error(`Invalid UTC offset: ${offset}`);
-    }
-  } else {
-    momentObj.utc();
-  }
-  // Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
-  return momentObj.format(format);
+	// UTC offsets (https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) are
+	// between -12 to +14, e.g. "-09:00", "+13:30"
+	if (offset) {
+		const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
+		if (offset.match(pattern)) {
+			momentObj.utcOffset(offset);
+		} else {
+			throw new Error(`Invalid UTC offset: ${offset}`);
+		}
+	} else {
+		momentObj.utc();
+	}
+	// Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
+	return momentObj.format(format);
 }
 
 module.exports = {
-  formatDate
+	formatDate
 };
