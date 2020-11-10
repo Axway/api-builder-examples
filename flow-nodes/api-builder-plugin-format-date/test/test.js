@@ -56,12 +56,12 @@ describe('flow-node format-date', () => {
 							}
 						},
 						offset: {
-							description: 'The desired UTC Offset in the format ±[hh]:[mm]',
+							description: 'The desired UTC offset in the format ±[hh]:[mm]',
 							required: false,
 							initialType: 'string',
 							schema: {
 								type: 'string',
-								title: 'UTC Offset',
+								title: 'UTC offset',
 								pattern: '^[+-][0-1][0-9]:[0-5][0-9]$'
 							}
 						}

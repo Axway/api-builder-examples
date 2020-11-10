@@ -27,8 +27,8 @@ flow-nodes:
               type: string
               default: 'YYYY-MM-DDTHH:mm:ssZ'
           offset:
-            name: UTC Offset
-            description: The desired UTC Offset in the format ±[hh]:[mm]
+            name: UTC offset
+            description: The desired UTC offset in the format ±[hh]:[mm]
             required: false
             initialType: string
             schema:
