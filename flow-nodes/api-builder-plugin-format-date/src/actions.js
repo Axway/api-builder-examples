@@ -21,24 +21,29 @@ const moment = require('moment');
  *	 does not define "next", the first defined output).
  */
 function formatDate(params) {
-	const { date, format } = params;
+	const { date, format, offset } = params;
 
-	if (!date) {
-		throw new Error('Missing required parameter: date');
-	}
-	if (!format) {
-		throw new Error('Missing required parameter: format');
+	// Defaults to now
+	const momentObj = moment(date);
+
+	if (!momentObj.isValid()) {
+		throw new Error(`Invalid date: ${date}`);
 	}
 
-	// There is no sanity check on the formats in Moment.js, so an invalid format could be
-	// specified. As this is a wrapper, I won't be introducing additional format validation.
-	const formattedDate = moment(date).format(format);
-
-	// Moment doesn't throw an error if the passed in date is invalid it just returns 'Invalid date'
-	if (formattedDate === 'Invalid date') {
-		throw new Error(`Invalid date: '${date}`);
+	// UTC offsets (https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) are
+	// between -12 to +14, e.g. "-09:00", "+13:30"
+	if (offset) {
+		const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
+		if (offset.match(pattern)) {
+			momentObj.utcOffset(offset);
+		} else {
+			throw new Error(`Invalid UTC offset: ${offset}`);
+		}
+	} else {
+		momentObj.utc();
 	}
-	return formattedDate;
+	// Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
+	return momentObj.format(format);
 }
 
 module.exports = {
