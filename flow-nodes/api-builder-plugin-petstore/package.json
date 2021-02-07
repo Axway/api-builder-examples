@@ -33,6 +33,6 @@
 		"mocha": "^6.1.4"
 	},
 	"scripts": {
-		"test": "mocha ./test --recursive -R spec"
+		"test": "mocha ./test --recursive -R spec --timeout 7000"
 	}
 }
