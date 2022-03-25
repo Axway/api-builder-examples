@@ -3,7 +3,7 @@
 A collection of examples for API Builder.  To try them out, create an [API Builder project](https://docs.axway.com/bundle/api-builder/page/docs/getting_started/index.html), and then install them, e.g.:
 
 ```bash
-npx @axway/api-builder init demo
+axway builder init demo
 cd demo
 npm install
 git clone git@github.com:Axway/api-builder-examples.git
