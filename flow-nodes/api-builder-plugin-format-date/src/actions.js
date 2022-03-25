@@ -3,35 +3,47 @@ const moment = require('moment');
 /**
  * Action method.
  *
- * @param {object} req - The flow request context passed in at runtime.  The
- *	 parameters are resolved as `req.params` and the available authorization
- * credentials are passed in as `req.authorizations`.
- * @param {object} outputs - A set of output callbacks.  Use it to signal an
- *	 event and pass the output result back to the runtime.  Only use an
- *	 output callback once and only after all asyncronous tasks complete.
- *
- * @return {undefined}
+ * @param {object} params - A map of all the parameters passed from the flow.
+ * @param {object} options - The additional options provided from the flow
+ *	 engine.
+ * @param {object} options.pluginConfig - The service configuration for this
+ *	 plugin from API Builder config.pluginConfig['api-builder-plugin-pluginName']
+ * @param {object} options.logger - The API Builder logger which can be used
+ *	 to log messages to the console. When run in unit-tests, the messages are
+ *	 not logged.  If you wish to test logging, you will need to create a
+ *	 mocked logger (e.g. using `simple-mock`) and override in
+ *	 `MockRuntime.loadPlugin`.  For more information about the logger, see:
+ *	 https://docs.axway.com/bundle/API_Builder_4x_allOS_en/page/logging.html
+ * @param {*} [options.pluginContext] - The data provided by passing the
+ *	 context to `sdk.load(file, actions, { pluginContext })` in `getPlugin`
+ *	 in `index.js`.
+ * @return {*} The response value (resolves to "next" output, or if the method
+ *	 does not define "next", the first defined output).
  */
-function formatDate(req, outputs) {
-	const { date, format } = req.params;
+function formatDate(params) {
+	const { date, format, offset } = params;
 
-	if (!date) {
-		return outputs.error(null, new Error('Missing required parameter: date'));
-	}
-	if (!format) {
-		return outputs.error(null, new Error('Missing required parameter: format'));
-	}
+	// Defaults to now
+	const momentObj = moment(date);
 
-	// There is no sanity check on the formats in Moment.js, so an invalid format could be
-	// specified. As this is a wrapper, I won't be introducing additional format validation.
-	const formattedDate = moment(date).format(format);
-
-	// Moment doesn't throw an error if the passed in date is invalid it just returns 'Invalid date'
-	if (formattedDate === 'Invalid date') {
-		return outputs.error(null, new Error(`Invalid date: '${date}`));
+	if (!momentObj.isValid()) {
+		throw new Error(`Invalid date: ${date}`);
 	}
 
-	return outputs.next(null, formattedDate);
+	// UTC offsets (https://en.wikipedia.org/wiki/List_of_UTC_time_offsets) are
+	// between -12 to +14, e.g. "-09:00", "+13:30"
+	if (offset) {
+		const pattern = /^[+-][0-1][0-9]:[0-5][0-9]$/;
+		if (offset.match(pattern)) {
+			momentObj.utcOffset(offset);
+		} else {
+			throw new Error(`Invalid UTC offset: ${offset}`);
+		}
+	} else {
+		momentObj.utc();
+	}
+	// Defaults to ISO-8601 (YYYY-MM-DDTHH:mm:ssZ)
+	return momentObj.format(format);
 }
 
 module.exports = {

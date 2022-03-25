@@ -5,32 +5,46 @@ flow-nodes:
     description: Example flow-node that formats Date. Uses the popular Moment.js library.
     category: general
     methods:
-      formatDate:
+      formatDate: # This same key is used in `actions.js`
         name: Format Date
         description: Formats a date. See Moment.js format() method.
         parameters:
           date:
-            description: The date to be formatted.
-            required: true
+            name: Date
+            description: The date to be formatted. Defaults to current date/time. For more information, see https://momentjs.com/docs/#/parsing/string/
+            required: false
             initialType: string
             schema:
               type: string
+              example:
+                - 2020-08-19
           format:
-            description: The desired format. Supports all Moment.js supported formats.
-            required: true
+            name: Format
+            description: Takes a string of tokens and replaces them with their corresponding values. Defaults to ISO-8601 format. For the full list of supported tokens and examples, see https://momentjs.com/docs/#/parsing/special-formats/
+            required: false
             initialType: string
             schema:
               type: string
-        outputs:
-          # success output(s) should be first
-          next:
-            name: Next
-            context: $.date
+              default: 'YYYY-MM-DDTHH:mm:ssZ'
+          offset:
+            name: UTC offset
+            description: The desired UTC offset in the format ±[hh]:[mm]
+            required: false
+            initialType: string
             schema:
               type: string
-          # error output(s) should be last
-          error:
-            name: Error
-            context: $.error
-            schema:
-              type: string
+              pattern: '^[+-][0-1][0-9]:[0-5][0-9]$'
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: The desired formatted date displayed successfully.
+          context: $.date
+          schema:
+            type: string
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: There is an unexpected error on format date encountered.
+          context: $.error
+          schema:
+            type: string

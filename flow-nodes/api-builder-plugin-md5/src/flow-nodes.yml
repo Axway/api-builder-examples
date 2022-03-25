@@ -5,23 +5,28 @@ flow-nodes:
     description: MD5 message digest
     category: general
     methods:
-      digest:
+      digest: # This same key is used in `actions.js`
+        name: MD5 Digest
         description: Creates an MD5 digest and returns as hex.
         parameters:
           data:
+            name: Data
             description: The data to digest.
             required: true
             initialType: string
-        outputs:
-          next:
-            name: Next
-            description: Successfully created digest.
-            context: $.md5
             schema:
               type: string
-          error:
-            name: Error
-            description: Encountered an error.
-            context: $.error
-            schema:
-              type: string
+        # "Next" (next) output
+        returns:
+          name: Next
+          description: Successfully created digest.
+          context: $.md5
+          schema:
+            type: string
+        # "Error" (error) output
+        throws:
+          name: Error
+          description: Encountered an error.
+          context: $.error
+          schema:
+            type: string
