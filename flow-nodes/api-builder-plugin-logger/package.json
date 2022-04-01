@@ -9,7 +9,8 @@
 		"api-builder"
 	],
 	"engines": {
-		"node": ">= 12.15"
+		"node": ">= 12.15",
+		"apibuilder": ">= 4.5.0"
 	},
 	"main": "src/index.js",
 	"files": [
@@ -21,9 +22,6 @@
 	},
 	"dependencies": {
 		"@axway/api-builder-sdk": "^1.0.0"
-	},
-	"peerDependencies": {
-		"@axway/api-builder-runtime": "^4.5.0"
 	},
 	"devDependencies": {
 		"@axway/api-builder-test-utils": "^1.0.0",
